@@ -1087,7 +1087,9 @@ def create_country_table(country_path):
 
     # Counvert country code into country name
     country_url_pattern = '[Subscription Link](https://raw.githubusercontent.com/soroushmirzaei/telegram-configs-collector/main/countries/{country_code}/mixed)'
-    country_code_name_url = sorted(list(map(lambda element : (element.upper(), pc.country_alpha2_to_country_name(element.upper()) if element.upper() != 'NA' else 'Not Available', country_url_pattern.format(country_code = element)), country_code_list)), key = lambda element : element[1])
+    #country_code_name_url = sorted(list(map(lambda element : (element.upper(), pc.country_alpha2_to_country_name(element.upper()) if element.upper() != 'NA' else 'Not Available', country_url_pattern.format(country_code = element)), country_code_list)), key = lambda element : element[1])
+    country_code_name_url = sorted(list(map(lambda element : (element.upper(), 'Kosovo' if element.upper() == 'XK' else ('Not Available' if element.upper() == 'NA' else pc.country_alpha2_to_country_name(element.upper())), country_url_pattern.format(country_code = element)), country_code_list)), key = lambda element : element[1])
+    
 
     for index, element in enumerate(country_code_name_url):
         tail_string = ' | '.join(element)
