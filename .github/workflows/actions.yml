@@ -14,12 +14,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
-          fetch-depth: 0   # ⭐ مهم برای rebase
-
-      - name: Debug – list files
-        run: ls -R
+          ref: main
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -45,7 +43,8 @@ jobs:
 
       - name: Pull latest changes (rebase)
         run: |
-          git pull origin main --rebase
+          git fetch origin
+          git rebase origin/main
 
       - name: Push changes
         run: git push origin main
