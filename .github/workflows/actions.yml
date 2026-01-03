@@ -1,9 +1,9 @@
 name: run main.py
 
 on:
-  workflow_dispatch:
+  workflow_dispatch:     # ← This enables manual runs from the GitHub UI
   schedule:
-    - cron: '0 */5 * * *' # هر 5 ساعت
+    - cron: '0 */5 * * *' # Every Monday at 00:00 UTC
 
 permissions:
   contents: write
@@ -14,12 +14,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 0  # ← اضافه کردن این خط
-          
       - name: Debug – list files
         run: ls -R
-        
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
@@ -29,34 +25,20 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install wget jdatetime requests tldextract beautifulsoup4 geoip2 dnspython pycountry_convert
-          
+
       - name: Run main.py
         env:
           SOME_SECRET: ${{ secrets.SOME_SECRET }}
         run: python main.py
 
-      - name: Check for changes
-        id: check_changes
-        run: |
-          git diff --quiet && echo "changed=false" >> $GITHUB_OUTPUT || echo "changed=true" >> $GITHUB_OUTPUT
-
-      - name: Pull latest changes
-        if: steps.check_changes.outputs.changed == 'true'
+      - name: Commit changes
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git pull --rebase origin main || true
-
-      - name: Commit changes
-        if: steps.check_changes.outputs.changed == 'true'
-        run: |
           git add -A
           git diff-index --quiet HEAD || git commit -m "✔️ $(date '+%Y-%m-%d %H:%M:%S')"
-          
+
       - name: Push changes
-        if: steps.check_changes.outputs.changed == 'true'
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: main
-          force: false
+        run: git push origin main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
