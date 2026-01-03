@@ -33,19 +33,10 @@ if os.path.exists('./geoip-lite/geoip-lite-country.mmdb'):
     os.remove('./geoip-lite/geoip-lite-country.mmdb')
 
 # Download the file and rename it
-#url = 'https://git.io/GeoLite2-Country.mmdb'
-#filename = 'geoip-lite-country.mmdb'
-#wget.download(url, filename)
-#wget.download(url, filename)/////
-url = "https://github.com/P3TERX/GeoLite.mmdb/raw/download/GeoLite2-Country.mmdb"
+url = 'https://git.io/GeoLite2-Country.mmdb'
+filename = 'geoip-lite-country.mmdb'
+wget.download(url, filename)
 
-response = requests.get(url, stream=True)
-if response.status_code == 200:
-    with open("GeoLite2-Country.mmdb", 'wb') as f:
-        f.write(response.content)
-    print("دانلود موفق!")
-else:
-    print(f"خطا: {response.status_code}")
 
 # Move the file to the geoip folder
 os.rename(filename, os.path.join('./geoip-lite', filename))
